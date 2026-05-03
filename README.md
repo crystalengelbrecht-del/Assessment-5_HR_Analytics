@@ -5,9 +5,7 @@
 
 ## Project Overview
 
-This project builds an executive-ready Power BI report using the IBM HR Analytics dataset.
-The data has been split from a flat table into a star schema with one central fact table
-and five dimension tables.
+This project builds an executive-ready Power BI report using the IBM HR Analytics dataset. The data has been split from a flat table into a star schema with one central fact table and five dimension tables.
 
 **Key findings:**
 - 1,470 employees · 237 attritions · 16.1% attrition rate
@@ -20,28 +18,32 @@ and five dimension tables.
 ## Folder Structure
 
 ```
-Assessment5_HR_Analytics/
+Assessment-5_HR_Analytics/
 ├── data/
 │   ├── raw/
-│   │   └── HR_Analytics.csv          ← original flat file (1,470 rows)
+│   │   └── HR_Analytics.csv
 │   └── star_schema/
-│       ├── Fact_Employee.csv         ← central fact table (1,470 rows)
-│       ├── Dim_Department.csv        ← 3 departments
-│       ├── Dim_Education.csv         ← 6 education fields
-│       ├── Dim_JobRole.csv           ← 9 job roles
-│       ├── Dim_AgeGroup.csv          ← 5 age bands
-│       └── Dim_SalarySlab.csv        ← 4 salary bands (with SalaryOrder column)
+│       ├── Dim_AgeGroup.csv
+│       ├── Dim_Department.csv
+│       ├── Dim_Education.csv
+│       ├── Dim_JobRole.csv
+│       ├── Dim_SalarySlab.csv
+│       └── Fact_Employee.csv
 ├── docs/
-│   ├── Storyboard.pdf
-│   ├── Narrative.pdf
 │   ├── Accessibility_Checklist.pdf
-│   └── Prompt_Reflection_Log.pdf
+│   ├── Narrative.pdf
+│   ├── Prompt_Reflection_Log.pdf
+│   └── Storyboard.pdf
+├── screenshots/
+│   ├── department_drill-down_page2.png
+│   ├── executive_summary_page1.png
+│   ├── star_schema_model_view.png
+│   └── tenure_&_salary_analysis_page3.png
 ├── sql/
-│   └── star_schema.sql               ← DDL and relationship documentation
+│   └── star_schema.sql
 ├── src/
-│   ├── build_star_schema.py          ← Python script that creates the star schema
-│   └── HR_Analytics_Report.pbix     ← Power BI report file
-├── screenshots/                      ← screenshots of all 3 pages and Model View
+│   ├── HR_Analytics_Report.pbix
+│   └── build_star_schema.py
 └── README.md
 ```
 
@@ -72,13 +74,13 @@ Open `src/HR_Analytics_Report.pbix` in Power BI Desktop (no sign-in required for
 
 The following 5 relationships are configured in Power BI Model View:
 
-| From (dimension)               | To (fact table)                   | Cardinality  |
-|-------------------------------|-----------------------------------|--------------|
-| Dim_Department[DepartmentID]  | Fact_Employee[DepartmentID]       | One → many   |
-| Dim_Education[EducationFieldID]| Fact_Employee[EducationFieldID]  | One → many   |
-| Dim_JobRole[JobRoleID]        | Fact_Employee[JobRoleID]          | One → many   |
-| Dim_AgeGroup[AgeGroupID]      | Fact_Employee[AgeGroupID]         | One → many   |
-| Dim_SalarySlab[SalarySlabID]  | Fact_Employee[SalarySlabID]       | One → many   |
+| From (dimension)                | To (fact table)                   | Cardinality |
+|---------------------------------|-----------------------------------|-------------|
+| Dim_Department[DepartmentID]    | Fact_Employee[DepartmentID]       | One → many  |
+| Dim_Education[EducationFieldID] | Fact_Employee[EducationFieldID]   | One → many  |
+| Dim_JobRole[JobRoleID]          | Fact_Employee[JobRoleID]          | One → many  |
+| Dim_AgeGroup[AgeGroupID]        | Fact_Employee[AgeGroupID]         | One → many  |
+| Dim_SalarySlab[SalarySlabID]    | Fact_Employee[SalarySlabID]       | One → many  |
 
 All cross-filter directions are set to Single.
 
@@ -88,10 +90,15 @@ All cross-filter directions are set to Single.
 
 ```dax
 Total Employees = COUNTROWS(Fact_Employee)
+
 Attrition Count = COUNTROWS(FILTER(Fact_Employee, Fact_Employee[Attrition] = "Yes"))
+
 Attrition Rate = DIVIDE([Attrition Count], [Total Employees])
+
 Avg Age = AVERAGE(Fact_Employee[Age])
+
 Avg Monthly Income = AVERAGE(Fact_Employee[MonthlyIncome])
+
 Avg Years at Company = AVERAGE(Fact_Employee[YearsAtCompany])
 ```
 
@@ -99,14 +106,24 @@ Avg Years at Company = AVERAGE(Fact_Employee[YearsAtCompany])
 
 ### Step 5 - Report Pages
 
-**Page 1 - Executive Summary**
-5 KPI cards · Donut chart (education field) · Column chart (age group) · Bar chart (salary band) · Department slicer
+**Page 1 — Executive Summary**
+- 5 KPI cards: Total Employees · Attrition Count · Attrition Rate · Avg Age · Avg Monthly Income
+- Donut chart: Attrition by Education Field
+- Column chart: Attrition by Age Group
+- Bar chart: Attrition by Salary Band
+- Slicer: Filter by Department
 
 **Page 2 - Department Drill-Down**
-Bar chart (job role) · Matrix (role × satisfaction) · Treemap (gender) · Area chart (tenure) · Slicers
+- Bar chart: Attrition by Job Role
+- Matrix: Job Role × Job Satisfaction Score
+- Treemap: Attrition split by Gender
+- Area chart: Attrition by Tenure (Years at Company)
+- Slicers: Filter by Department and Gender
 
 **Page 3 - Tenure & Salary Analysis**
-Scatter chart (income vs tenure) · Bar chart (avg salary by dept) · KPI cards
+- Scatter chart: Monthly Income vs Tenure by Attrition Status
+- Bar chart: Average Monthly Income by Department
+- KPI cards: Average Years at Company · Total Employees
 
 ---
 
